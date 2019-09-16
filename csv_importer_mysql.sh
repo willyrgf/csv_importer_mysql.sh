@@ -26,7 +26,7 @@ _mysql_load_csv() {
 
 _get_csv_separator() {
     [[ -f "$1" ]] || return 1
-    separators=(';' ',' '\t')
+    separators=(';' ',' '\t' '|')
     for s in ${separators[@]}; do
         count=$(xsv headers -d "${s}" "${1}" | wc -l)
         if [[ ${count} -gt 1 ]]; then
@@ -58,6 +58,7 @@ _parse_headers_csv_to_sql() {
             sed 's/,/_/g' |
             sed 's/ /_/g' |
             sed 's/-/_/g' |
+            sed 's/|/ /g' |
             sed 's/;/ /g' |
             tr '[[:upper:]]' '[[:lower:]]' |
             xargs \
